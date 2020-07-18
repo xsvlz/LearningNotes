@@ -1,6 +1,6 @@
 # MySQL锁机制(未完)
 
-![](media/15931434572358/15931566992081.jpg)
+![](http://img.longzhuang.top/20200715175307.jpg)
 
 [^ref_lock]: 本文参考掘金作者:公众号非科班的科班<br>连接：https://juejin.im/post/5ef0aac8e51d4574113a0447
 

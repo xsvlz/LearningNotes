@@ -26,7 +26,7 @@ Math.rint()     // 四舍五入, 返回double值(在 x.5 时向偶数舍入)
 
 `Math.round` 和 `Math.rint`的区别:
 
-![-w614](media/15928016603327/15928037157961.jpg)
+![-w614](http://img.longzhuang.top/20200716172725.jpg)
 
 ## 随机数
 

@@ -13,7 +13,7 @@ System.out.print(a);
 
 编译器会报错，原因如下:
 
-![-w600](media/15928308320651/15928309259962.png)
+![-w600](http://img.longzhuang.top/20200716164415.png)
 
 第二种情况：
 ```java
