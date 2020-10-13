@@ -37,16 +37,16 @@ Java集合框架大致示意图（包含常用的集合类和大致的接口继�
 String[] strs = collection.toArray(new String[0]);
 ```
 
-## List接口
+# List接口
 
 基于List的集合允许元素的重复，同时提供了随机访问的方法，可以对集合中的任意元素进行操作。
 
-### ArrayList
+## ArrayList
 
 ![-w1026](http://img.longzhuang.top/15939690988785.jpg)
 
 
-#### ArrayList简介
+### ArrayList简介
 
 ArrayList 是一个数组队列，内部基于数组实现，相当于动态数组。与Java中的数组相比，它的容量能动态增长。它继承于`AbstractList`，实现了`List`, `RandomAccess`, `Cloneable`, `java.io.Serializable`这些接口。
 
@@ -59,7 +59,7 @@ ArrayList 实现了`RandmoAccess`接口，即提供了随机访问功能。`Rand
 
 和Vector不同，**ArrayList中的操作不是线程安全的！**所以，建议在单线程中才使用ArrayList，而在多线程中可以选择`Vector`或者`CopyOnWriteArrayList`。
 
-#### ArrayList构造函数
+### ArrayList构造函数
 
 ArrayList中提供了三种构造函数：
 
@@ -67,9 +67,9 @@ ArrayList中提供了三种构造函数：
 - `ArrayList(int initialCapacity)` : 传入一个初始的容量（默认值为10）
 - `ArrayList(Collection c)` : 使用指定的Collection构造ArrayList
 
-#### ArrayList源码分析
+### ArrayList源码分析
 
-##### 1. 成员属性`elementData`和`size`
+#### 1. 成员属性`elementData`和`size`
 
 `elementData`是一个Object类型的数组，它就是ArrayList保存元素的方式。它的初始容量默认为10。当集合中的元素超出这个容量，便会进行扩容操作。需要扩容时，ArrayList会把数组容量扩大一半。
 
@@ -78,9 +78,9 @@ ArrayList中提供了三种构造函数：
 `size`就是动态数组的**实际大小**，即保存了多少个元素。
 
 
-##### 2. 常用操作
+#### 2. 常用操作
 
-###### 1. 增
+##### 1. 增
 
 - 先判断是否越界，是否需要扩容。 
     - 如果扩容， 就复制数组。 
@@ -89,12 +89,12 @@ ArrayList中提供了三种构造函数：
 值得注意的是： 
 - 如果需要扩容的话，默认扩容一半。如果扩容一半不够，就用目标的size作为扩容后的容量。 
 
-###### 2. 删
+##### 2. 删
 
 - 删除操作会修改modCount，且可能涉及到数组的复制，相对低效。 
 - 批量删除中，涉及高效的保存两个集合公有元素的算法，可以留意一下。
 
-###### 3. 改
+##### 3. 改
 
 不会修改modCount，相对增删是高效的操作。
 ```java
@@ -106,7 +106,7 @@ public E set(int index, E element) {
 }
 ```
 
-###### 4. 查
+##### 4. 查
 
 数组本身支持快速随机访问，效率很高。
 ```java
@@ -114,19 +114,20 @@ public E get(int index) {
     rangeCheck(index);//越界检查
     return elementData(index); //下标取数据
 }
+
 E elementData(int index) {
     return (E) elementData[index];
 }
 ```
 
-##### 3. 小结
+#### 3. 小结
 
 - 扩容操作会导致数组复制，批量删除会导致 找出两个集合的交集，以及数组复制操作，因此，增、删都相对低效。 而 改、查都是很高效的操作。
 - 与ArrayList相似的Vector的内部也是数组做的，区别在于Vector在API上都加了synchronized所以它是线程安全的，以及Vector扩容时，是翻倍size，而ArrayList是扩容50%。
 
 ---
 
-### LinkedList
+## LinkedList
 
 ![-w931](http://img.longzhuang.top/15939691374302.jpg)
 
@@ -186,7 +187,7 @@ LinkedList还可以用于队列或双端队列，这部分内容在Queue接口�
 
 ---
 
-## Queue接口
+# Queue接口
 
 在Queue接口下有三个常用的类，分别为`LinkedList`, `ArrayDeque`, `PriorityQueue`。
 
@@ -212,9 +213,8 @@ Queue中有两套操作的方法，都能实现相同的功能，但其中一套
 
 其中第一行对应了Queue中的方法，第二行则是Queue中无法实现的操作。除了`getFirst()`和`getLast()`替代了Queue中的`element()`外，其余的方法都是在原有方法上加后缀。
 
----
 
-### LinkedList
+## LinkedList
 
 LinkedList实现了List和Deque两个接口，基于链表，允许插入null。关于List接口的部分已经介绍完毕，这里介绍它对Deque接口的实现。
 
@@ -267,7 +267,7 @@ private E unlinkFirst(Node<E> f) {
 
 ---
 
-### ArrayDeque
+## ArrayDeque
 
 ![-w849](http://img.longzhuang.top/15939691845774.jpg)
 
@@ -280,9 +280,9 @@ ArrayDeque是Deque的另一个实现类，这个类从JDK1.6开始引入，它�
 
 在实现队列和堆栈的时候，ArrayDeque的性能要优于LinkedList，非常重要的原因是LinkedList每插入一个元素都要使用new来创建一个结点，这会带来很大的开销；同时因为链表结构的内存地址不连续，很难命中缓存，这就导致了从主存读取的又一大的时间开销。因此如果只需要实现双端队列的功能，使用ArrayDeque通常可以获得更好的性能。
 
-但需要注意的是，并不是所有情况下都适合使用ArrayDeque，例如当你必须在队列中保存null值时就需要使用LinkedList（尽管官方不推荐null值）；另外由于ArrayDeque没有实现List接口，它也没有提供随机访问的方法，因此如果需要使用List的相关功能，ArrayDeque就无法提供。
+但需要注意的是，并不是所有情况下都适合使用ArrayDeque，例如当你必须在队列中保存null值时就需要使用LinkedList（官方不推荐null值）；另外由于ArrayDeque没有实现List接口，它也没有提供随机访问的方法，因此如果需要使用List的相关功能，ArrayDeque就无法提供。
 
-#### ArrayDeqeu构造函数
+### ArrayDeqeu构造函数
 
 ArrayDeque提供了三种构造函数，分别为默认构造、从已有Collection中构造，以及指定默认容量。下面主要介绍第三种。
 
@@ -318,10 +318,10 @@ private static int calculateSize(int numElements) {
 }
 ```
 
-我们重点关注`private static int calculateSize(int numElements)`这一方法。这个方法的作用是将数组的实际容量控制为大于且最接近指定值的2的整数次方。在位运算中，距离一个数最近的2的整数次幂就是比这个数高一位的比特为1，其余为0。
+我们重点关注`private static int calculateSize(int numElements)`这一方法。这个方法的作用是**将数组的实际容量控制为大于且最接近指定值的2的整数次方**。在位运算中，距离一个数最近的2的整数次幂就是比这个数高一位的比特为1，其余为0。
 通过五次逻辑右移操作，可以确保把最高的1bit位和它的右边全部设置为1。然后再+1，就可以得到一个距离它最近的而且大于它的2的整数次幂了。
 
-#### ArrayDeque属性和方法
+### ArrayDeque属性和方法
 
 在ArrayDeque中有用来存放集合元素的Object类的数组`elements`；头元素的下标`head`和尾元素的下标`tail`。
 
@@ -334,7 +334,7 @@ public int size() {
 
 由于数组的容量是比元素数大的2的整数次幂，那么`elements.length - 1`就是将最高位的右侧全部置1，其他位为0。这个与运算实际上相当于取模的操作。因为ArrayDeque作为循环数组，头元素是会向前增长过0，从而循环到到数组的末尾的，所以头结点的下标可能比尾结点更大。
 
-##### 1. 插入元素
+#### 1. 插入元素
 
 ArrayDeque提供了双端队列提供的所有插入方法，实际起作用的方法有两个，分别是在头部插入的`addFirst()`和在尾部插入的`addLast()`。
 
@@ -390,7 +390,7 @@ public void addLast(E e) {
 }
 ```
 
-##### 2. 删除元素
+#### 2. 删除元素
 
 删除元素使用的方法为`pollFirst()`和`pollLast()`，分别为从头部和从尾部删除元素，在队列为空时返回null（这也是ArrayDeqeu不允许存放空值的原因之一）。其他删除方法直接调用这两个方法或在此基础上检查队列为空时抛出异常。
 
@@ -412,26 +412,24 @@ public E pollFirst() {
 
 获取元素的方式很简单，利用头部下标从数组中取出即可。同时将head+1并取模（循环数组），与插入恰好相反。而`pollLast()`与这个方法区别不大，就不再赘述。
 
-#### 小结
+### 小结
 
 总体来说, ArrayDeque是实现栈和队列以及双端队列的首选，它不需要从中间删除结点，因此通过循环数组下标保存头尾结点的结构保障了它的高性能。它从首位读取元素的时间都是$O(1)$，并且不需要创建新结点，而且由于数组内存空间连续的特点，连续的读取也会有较高的缓存命中率。
 
 它的缺点是由于容量必须为2的幂次，也一定程度上降低了空间的利用率，在最坏的情况下，如果元素最大个数为$2^k$，就要实际创建一个容量为$2^{k+1}$的数组，浪费了一半的空间。
 
----
 
-### PriorityQueue
+## PriorityQueue
 
 ![-w1025](http://img.longzhuang.top/20200715174019.jpg)
 
 
-PriorityQueue，即优先级队列，继承自AbstractQueue，即可以实现Queue接口的所有方法。Java中的PriorityQueue是通过堆来实现的，可以通过构造方法传入比较器来决定如何判定优先级。默认为最小值堆，即队列首部的元素就是整个队列的最小值，如果有多个就取其中之一。
+PriorityQueue，即优先级队列，继承自AbstractQueue，可以实现Queue接口的所有方法。Java中的PriorityQueue是通过堆来实现的，可以通过构造方法传入比较器来决定如何判定优先级。默认为最小值堆，即队列首部的元素就是整个队列的最小值，如果有多个就取其中之一。
 
-堆是一棵完全二叉树，而由于完全二叉树的性质决定了它可以使用顺序存储结构通过随机访问来高效实现，因此PriorityQueue的底层数据结构是数组，也有capacity，有扩容操作。
-
+**堆是一棵完全二叉树**，而由于完全二叉树的性质决定了它可以使用顺序存储结构（数组）通过随机访问来高效实现，因此PriorityQueue的底层数据结构是数组，也有capacity，有扩容操作。
 同样，PriorityQueue也不是线程安全的。
 
-#### 属性
+### 属性
 
 ```java
 private static final int DEFAULT_INITIAL_CAPACITY = 11; //默认的初始化容量
@@ -445,7 +443,7 @@ private final Comparator<? super E> comparator;  // 比较器
 transient int modCount = 0; // 用于实现 fast-fail 机制的
 ```
 
-#### 构造方法
+### 构造方法
 
 PriorityQueue提供了多达7个构造方法，如下：
 
@@ -661,9 +659,9 @@ private void heapify() {
 
 可以看出，建堆的过程就是从非叶子结点开始，自底向上地将每个结点执行一次下拉操作。这样就可以保证每次都把优先级高的结点交换到上层，直到优先级最高的被交换到堆顶。
 
-#### 堆的插入和删除
+### 堆的插入和删除
 
-##### 1. 插入结点（入队）
+#### 1. 插入结点（入队）
 
 新结点的插入，具体的实现在`offer()`方法中：
 
@@ -686,7 +684,7 @@ public boolean offer(E e) {
 
 总的来说，新结点的插入总是在尾部进行，但是插入之后会通过shiftUp向上找到合适的位置。
 
-##### 2. 删除结点（出队）
+#### 2. 删除结点（出队）
 
 优先队列的出队每次都是取出头结点，即索引为0的结点。
 
@@ -709,7 +707,7 @@ public E poll() {
 
 从具体的实现方式可以看出，删除头结点后需要找到一个新的头结点。而最方便的做法就是先将尾结点提到头结点，然后再依次执行shiftDown，就可以让每个结点都到对应的位置来。
 
-##### 3. 删除任意元素
+#### 3. 删除任意元素
 
 在PriorityQueue中，还实现了一个`remove(Object o)`方法，可以删除堆中的指定元素。
 
@@ -725,7 +723,7 @@ public boolean remove(Object o) {
     }
 }
 
-// 删除指定下标的元素
+// 删除指定下标的元素(内部方法)
 private E removeAt(int i) {
     // assert i >= 0 && i < size;
     modCount++;
@@ -754,7 +752,7 @@ private E removeAt(int i) {
 
 ---
 
-## Map接口
+# Map接口
 
 Map集合与Collection集合不同，它具有如下特点：
 
@@ -780,7 +778,7 @@ Map中还存在一个内部接口`Entry`：`Map.Entry<K,V>`，它包含了一对
 
 ---
 
-### HashMap
+## HashMap
 
 ![-w892](http://img.longzhuang.top/20200715174221.jpg)
 
@@ -791,7 +789,7 @@ HashMap根据存储对象的hashCode值来决定存储位置，由于使用了�
 
 **HashMap不是线程安全的**
 
-#### HashMap属性字段
+### HashMap属性字段
 
 首先是HashMap中的一些预设值：
 ```java
@@ -891,7 +889,7 @@ static class Node<K,V> implements Map.Entry<K,V> {
 
 这个TreeNode是继承自LinkedHashMap.Entry，而LinkedHashMap.Entry又继承自HashMap.Node，也就是说TreeNode是Node的一个子类，因此需要转换成红黑树的时候，只需要把转换后的根结点放在原来的哈希桶中即可。
 
-#### HashMap构造方法
+### HashMap构造方法
 
 HashMap一共有4个构造方法，主要的工作就是完成初始容量和负载因子的赋值。Hash表都是采用的懒加载方式，构造HashMap时不会被创建，当第一次插入数据时才会创建。
 
@@ -926,7 +924,7 @@ public HashMap(Map<? extends K, ? extends V> m) {
 }
 ```
 
-我们从上面的字段可以看出默认的capacity是16，而如果我们指定了capacity，HashMap并不会直接使用这个容量，而是找到一个最接近它的大于等于它的2的整数次幂作为容量，即上述构造方法的代码中第11行调用了如下方法获取threshold：
+我们从上面的字段可以看出默认的capacity是16，而如果我们指定了capacity，HashMap并不会直接使用这个容量，而是**找到一个最接近它的大于等于它的2的整数次幂作为容量**，即上述构造方法的代码中第11行调用了如下方法获取threshold：
 
 ```java
 static final int tableSizeFor(int cap) {
@@ -944,7 +942,7 @@ static final int tableSizeFor(int cap) {
 
 这里还有一个问题，虽然给threshold的定义是`capacity * factory`，即它并不等价于capacity，但是使用这种构造方法对threshold赋值后，对table的初始化操作就会直接使用threshold当作初始的capacity。这个操作可以在`resize()`方法中看到
 
-#### HashMap获取元素
+### HashMap获取元素
 
 HashMap通常可以在$O(1)$时间内获取元素。获取的步骤可以概括如下：
 1. 计算要找的key的哈希值，定位到数组的下标
@@ -983,7 +981,7 @@ final Node<K,V> getNode(int hash, Object key) {
 ```
 
 
-#### HashMap插入
+### HashMap插入
 
 HashMap使用`put(K key, V value)`方法插入一个键值对。如果在原Map中不存在这个key，就插入，否则就更新这个key的值为value。
 
@@ -1040,7 +1038,7 @@ final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
 }
 ```
 
-#### HashMap扩容
+### HashMap扩容
 
 在每次插入元素后，HashMap都会检查元素的个数是否达到了阈值，如果达到了阈值就需要使用`resize()`方法进行扩容。
 
@@ -1145,15 +1143,14 @@ for (int j = 0; j < oldCap; ++j) {
 
 可以看到，在JDK1.8中，扩容后链表的插入顺序与原链表一致，它避免了JDK1.7及之前的并发死循环问题。但这并不代表它可以在并发环境中使用，如果要在并发环境下使用，应该使用`ConcurrentHashMap`
 
-#### 小结
+### 小结
 
 1. JDK1.8的HashMap中引入了红黑树, 使它的结构变成了数组+链表+红黑树，让HashMap的性能得到了提升。
 2. HashMap不是线程安全的，并发环境须使用ConcurrentHashMap
 3. HashMap的扩容操作比较复杂，如果容量设置过小导致频繁发生扩容会对性能产生一定影响。因此如果能预估集合的规模，可以设置一个合适的容量，尽量减少扩容的触发。
 
----
 
-### LinkedHashMap
+## LinkedHashMap
 
 ![-w885](http://img.longzhuang.top/20200715174232.jpg)
 
@@ -1164,7 +1161,7 @@ LinkedHashMap中有两种排序方式，默认只按照元素的插入顺序进�
 
 其中的第二种排序方式也使得LinkedHashMap非常适合作为LRU的实现方式。
 
-#### LinkedHashMap顺序存取原理
+### LinkedHashMap顺序存取原理
 
 LinkedHashMap与HashMap最本质的区别就是是否有序，而LinkedHashMap实现有序的方式是继承了HashMap.Node，并增加了双向链表的指针`before`和`after`，形成了一个哈希表中所有结点的链表，迭代的时候就通过这个链表来迭代，而不是根据原数组。
 
@@ -1258,7 +1255,7 @@ void afterNodeRemoval(Node<K,V> e) { // unlink
 }
 ```
 
-#### LinkedHashMap实现LRU
+### LinkedHashMap实现LRU
 
 前面提到，LinkedHashMap有一个`accessOrder`属性，当它为true时，就会把每次获取或者尝试更新的结点移动到链表尾部。这个特点符合了LRU的排列机制。
 
@@ -1305,7 +1302,7 @@ public class LRUCache<K,V> extends LinkedHashMap<K,V> {
 
 ---
 
-### TreeMap
+## TreeMap
 
 TreeMap是Map的一个实现，它基于**红黑树**，是一种有序的key-value集合
 
@@ -1376,7 +1373,7 @@ static final class Entry<K,V> implements Map.Entry<K,V> {
 }
 ```
 
-#### TreeMap构造方法
+### TreeMap构造方法
 
 TreeMap有四种构造方法：
 
@@ -1394,7 +1391,7 @@ public TreeMap(Map<? extends K, ? extends V> m) {
     comparator = null;
     putAll(m);
 }
-//构造方法4：从指定的Sorted
+//构造方法4：从指定的SortedMap中创建
 public TreeMap(SortedMap<K, ? extends V> m) {
     comparator = m.comparator();
     try {
@@ -1411,9 +1408,9 @@ TreeMap的插入和删除操作都是基于红黑树进行的，这部分内容�
 
 ---
 
-### ConcurrentHashMap[^chm]
+## ConcurrentHashMap
 
-[^chm]: ConcurrentHashMap参考连接：[https://crossoverjie.top/2018/07/23/java-senior/ConcurrentHashMap/](https://crossoverjie.top/2018/07/23/java-senior/ConcurrentHashMap/)
+参考连接：[https://crossoverjie.top/2018/07/23/java-senior/ConcurrentHashMap/](https://crossoverjie.top/2018/07/23/java-senior/ConcurrentHashMap/)
 
 ![-w789](http://img.longzhuang.top/20200716172842.jpg)
 
